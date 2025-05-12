@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="admin/layout :: head"></head>
+  <body id="page-top">
+    <div id="wrapper">
+      <div th:replace="admin/layout :: sidebar"></div>
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <div th:replace="admin/layout :: topbar"></div>
+          <div class="container-fluid">
+            <h1 class="h3 mb-4 text-gray-800">Match List</h1>
+            <a class="btn btn-primary mb-3" th:href="@{/admin/matches/add}"
+              ><i class="fas fa-plus"></i> Add Match</a
+            >
+            <form method="get" class="form-inline mb-3">
+              <select name="tournamentId" class="form-control mr-2">
+                <option value="">All Tournaments</option>
+                <option th:each="t : ${tournaments}" th:value="${t.id}" th:text="${t.name}"
+                        th:selected="${param.tournamentId} == ${t.id}"></option>
+              </select>
+              <button type="submit" class="btn btn-primary">Filter</button>
+              <a th:href="@{/admin/matches}" class="btn btn-secondary ml-2">Reset</a>
+
+            </form>
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Team 1</th>
+                  <th>Team 2</th>
+                  <th>Winner</th>
+                  <th>Tournament</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="match : ${matches}">
+                  <td th:text="${match.id}"></td>
+                  <td th:text="${match.teamA.name}"></td>
+                  <td th:text="${match.teamB.name}"></td>
+                  <td th:text="${match.result != null ? match.result.teamAScore + ' - ' + match.result.teamBScore : 'En attente'}"></td>
+                  <td th:text="${match.tournament.name}"></td>
+                  <td
+                    th:text="${#dates.format(match.matchDate, 'dd-MM-yyyy')}"
+                  ></td>
+                  <td>
+                    <a
+                      th:href="@{'/admin/matches/edit/' + ${match.id}}"
+                      class="btn btn-success btn-sm"
+                      ><i class="fas fa-edit"></i> Edit</a
+                    >
+                    <a
+                      th:href="@{'/admin/matches/delete/' + ${match.id}}"
+                      class="btn btn-danger btn-sm"
+                      onclick="return confirm('Are you sure?')"
+                      ><i class="fas fa-trash"></i> Delete</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div th:replace="admin/layout :: footer"></div>
+      </div>
+    </div>
+    <div th:replace="admin/layout :: scripts"></div>
+  </body>
+</html>
